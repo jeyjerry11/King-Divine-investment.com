@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Withdraw Funds - KingC</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c7744);
+      color: white;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: rgba(255,255,255,0.05);
+      padding: 30px;
+      border-radius: 20px;
+    }
+
+    .balance {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    #status {
+      margin-bottom: 20px;
+      font-size: 16px;
+      font-style: italic;
+      color: #b3ffb3;
+      text-align: center;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+    }
+
+    button {
+      background: white;
+      color: #2c7744;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .back-btn {
+      margin-top: 10px;
+      background: transparent;
+      border: 1px solid white;
+      color: white;
+    }
+
+    .withdraw-log {
+      margin-top: 30px;
+      background: rgba(255,255,255,0.08);
+      padding: 15px;
+      border-radius: 15px;
+    }
+
+    .withdraw-log p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+
+    .success {
+      color: #90ee90;
+    }
+
+    .pending {
+      color: #ffcc66;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Withdraw Funds</h2>
+    <div class="balance">Current Balance: ₦<span id="currentBalance">0</span></div>
+    <div id="status"></div>
+
+    <input type="number" id="amount" placeholder="Amount to Withdraw" />
+    <input type="text" id="accountName" placeholder="Account Name" />
+    <input type="text" id="bankName" placeholder="Bank Name" />
+    <input type="text" id="accountNumber" placeholder="Account Number" />
+
+    <button onclick="withdrawFunds()">Withdraw</button>
+    <button class="back-btn" onclick="goBack()">← Back to Dashboard</button>
+
+    <div class="withdraw-log" id="withdrawHistory">
+      <h3 style="text-align:center;">Withdrawal History</h3>
+    </div>
+  </div>
+
+  <script>
+    let user = JSON.parse(localStorage.getItem("kingc_user")) || {};
+    const balanceEl = document.getElementById("currentBalance");
+    const historyEl = document.getElementById("withdrawHistory");
+
+    if (!user.withdrawals) user.withdrawals = [];
+    if (!user.balance) user.balance = 0;
+
+    balanceEl.textContent = user.balance;
+
+    function withdrawFunds() {
+      const amount = parseInt(document.getElementById("amount").value);
+      const accountName = document.getElementById("accountName").value.trim();
+      const bankName = document.getElementById("bankName").value.trim();
+      const accountNumber = document.getElementById("accountNumber").value.trim();
+
+      if (!amount || !accountName || !bankName || !accountNumber) {
+        alert("Please fill out all fields.");
+        return;
+      }
+
+      if (amount > user.balance) {
+        alert("Insufficient balance.");
+        return;
+      }
+
+      const withdrawal = {
+        amount,
+        date: Date.now(),
+        status: "pending",
+        accountName,
+        bankName,
+        accountNumber
+      };
+
+      user.balance -= amount;
+      user.withdrawals.push(withdrawal);
+      localStorage.setItem("kingc_user", JSON.stringify(user));
+      balanceEl.textContent = user.balance;
+      document.getElementById("status").textContent = `Withdrawal of ₦${amount} is pending. You will receive it in 3–7 days.`;
+
+      document.getElementById("amount").value = "";
+      document.getElementById("accountName").value = "";
+      document.getElementById("bankName").value = "";
+      document.getElementById("accountNumber").value = "";
+
+      renderWithdrawals();
+    }
+
+    function renderWithdrawals() {
+      const now = Date.now();
+      let html = "<h3 style='text-align:center;'>Withdrawal History</h3>";
+
+      user.withdrawals.forEach((w) => {
+        const elapsed = now - w.date;
+        const matured = elapsed >= 3 * 24 * 60 * 60 * 1000; // 3 days
+
+        if (w.status === "pending" && matured) {
+          w.status = "success";
+        }
+
+        const dateStr = new Date(w.date).toLocaleString();
+        const statusClass = w.status === "success" ? "success" : "pending";
+        const statusText = w.status === "success" ? "✅ Successful Withdrawal" : "⏳ Pending";
+
+        html += `<p class="${statusClass}">₦${w.amount} to ${w.bankName} (${w.accountNumber}) on ${dateStr} — ${statusText}</p>`;
+      });
+
+      localStorage.setItem("kingc_user", JSON.stringify(user));
+      historyEl.innerHTML = html;
+    }
+
+    function goBack() {
+      window.location.href = "dashboard.html";
+    }
+
+    renderWithdrawals();
+  </script>
+</body>
+</html>

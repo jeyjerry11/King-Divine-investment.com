@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Deposit - KingC</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #134E5E, #71B280); /* Space green */
+      color: white;
+      animation: fadeIn 1.2s ease-in;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .details {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .details span {
+      font-weight: bold;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin-top: 30px;
+      font-size: 16px;
+      border: none;
+      border-radius: 30px;
+      background: white;
+      color: #134E5E;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #f0f0f0;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Deposit Instructions</h2>
+    <p class="details">
+      Please send exactly <span id="amount">₦0</span> to the following account:<br><br>
+      <span>Bank Name:</span> Zenith Bank<br>
+      <span>Account Number:</span> 1234567890<br>
+      <span>Account Name:</span> KingC Divine Investment Ltd.<br>
+    </p>
+
+    <button onclick="goToUpload()">I’ve Sent the Payment – Upload Receipt</button>
+  </div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("kingc_user"));
+    if (!user || !user.investment || !user.investment.amount) {
+      alert("No investment plan found. Returning to dashboard.");
+      window.location.href = "dashboard.html";
+    }
+
+    document.getElementById("amount").textContent = "₦" + user.investment.amount;
+
+    function goToUpload() {
+      window.location.href = "receiptupload.html";
+    }
+  </script>
+
+</body>
+</html>
