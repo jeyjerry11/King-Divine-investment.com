@@ -1,99 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8" />
   <title>Register - KingC</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #1d2b64, #f8cdda);
-      font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      color: white;
-      animation: fadeIn 1.2s ease-in-out;
-    }
-
-    .container {
-      background: rgba(255,255,255,0.1);
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-      width: 90%;
-      max-width: 400px;
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      outline: none;
-    }
-
-    button {
-      width: 100%;
-      background-color: #fff;
-      color: #1d2b64;
-      padding: 12px;
-      border: none;
-      border-radius: 25px;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s ease;
-      margin-top: 15px;
-    }
-
-    button:hover {
-      background-color: #eee;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    body{margin:0;padding:0;background:linear-gradient(135deg,#1d2b64,#f8cdda);font-family:'Segoe UI',sans-serif;color:#fff;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+    .container{width:100%;max-width:420px;background:rgba(255,255,255,0.08);padding:24px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,0.35);backdrop-filter:blur(6px)}
+    h2{text-align:center;margin:0 0 14px}
+    input,select{width:100%;padding:12px 14px;margin:10px 0;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:#fff;font-size:15px;outline:none}
+    input::placeholder{color:rgba(255,255,255,0.75)}
+    .hint{font-size:13px;color:rgba(255,255,255,0.8);margin-bottom:6px}
+    .extra-inputs{overflow:hidden;max-height:0;opacity:0;transition:max-height .35s ease,opacity .28s ease;margin-top:6px}
+    .extra-inputs.show{max-height:420px;opacity:1}
+    .info-text{display:none;background:rgba(255,255,255,0.06);padding:8px;border-radius:8px;margin:8px 0;color:#fff;font-size:13px}
+    .info-text.show{display:block}
+    .submit-btn{display:none;margin-top:12px;background:#fff;color:#1d2b64;border:none;padding:12px;border-radius:24px;font-weight:700;font-size:15px;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,0.25)}
+    .submit-btn.show{display:block}
+    @media (max-width:420px){ .container{padding:18px} }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="container" role="main">
     <h2>Create Your Account</h2>
-    <form id="registerForm">
-      <input type="text" id="fullname" placeholder="Full Name" required>
-      <input type="email" id="email" placeholder="Email Address" required>
-      <input type="tel" id="phone" placeholder="Phone Number" required>
-      <input type="date" id="dob" required>
-      <input type="password" id="password" placeholder="Create Password" required>
-      <button type="submit">Register</button>
+
+    <form id="registerForm" autocomplete="off" novalidate>
+      <input id="fullname" type="text" placeholder="Full Name" required />
+      <input id="email" type="email" placeholder="Email Address" required />
+      <input id="phone" type="tel" placeholder="Phone Number" required />
+      <input id="dob" type="date" required />
+      <input id="password" type="password" placeholder="Create Password" required />
+
+      <div class="hint">Choose how you want to take part — click an option to continue</div>
+
+      <select id="optionSelect" required>
+        <option value="">-- Select Option --</option>
+        <option value="investing">1. Investing</option>
+        <option value="investing_referring">2. Investing & Referring</option>
+        <option value="referring_only">3. Referring Only</option>
+      </select>
+
+      <div id="infoText" class="info-text"></div>
+
+      <div id="extraInputs" class="extra-inputs" aria-hidden="true"></div>
+
+      <button type="submit" id="submitBtn" class="submit-btn">Continue</button>
     </form>
   </div>
 
   <script>
-    document.getElementById("registerForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const user = {
-        name: document.getElementById("fullname").value,
-        email: document.getElementById("email").value,
-        phone: document.getElementById("phone").value,
-        dob: document.getElementById("dob").value,
-        password: document.getElementById("password").value,
-        balance: 0,
-        investment: null
-      };
-      localStorage.setItem("kingc_user", JSON.stringify(user));
-      alert("Welcome to KingC Divine Investment!");
-      window.location.href = "dashboard.html";
-    });
+    (function(){
+      const optionSelect = document.getElementById('optionSelect');
+      const extraInputs = document.getElementById('extraInputs');
+      const infoText = document.getElementById('infoText');
+      const submitBtn = document.getElementById('submitBtn');
+      const form = document.getElementById('registerForm');
+
+      // helper to render bank inputs
+      function renderBankInputs(prefix = '') {
+        // prefix used to avoid duplicate IDs if needed
+        return `
+          <input type="text" id="${prefix}accName" placeholder="Account Name" required />
+          <input type="text" id="${prefix}accNumber" placeholder="Account Number" required />
+          <input type="text" id="${prefix}bankName" placeholder="Bank Name" required />
+        `;
+      }
+
+      // Reset UI state
+      function resetExtras(){
+        extraInputs.innerHTML = '';
+        extraInputs.classList.remove('show');
+        extraInputs.setAttribute('aria-hidden','true');
+        infoText.textContent = '';
+        infoText.classList.remove('show');
+        submitBtn.classList.remove('show');
+      }
+
+      // initial
+      resetExtras();
+
+      optionSelect.addEventListener('change', () => {
+        const val = optionSelect.value;
+        resetExtras();
+
+        if (val === 'investing') {
+          // no extra inputs, show button and set form behavior
+          submitBtn.classList.add('show');
+        } else if (val === 'investing_referring') {
+          infoText.textContent = 'Add your bank information to earn an additional 20% when you refer people.';
+          infoText.classList.add('show');
+          extraInputs.innerHTML = renderBankInputs('ref_');
+          extraInputs.classList.add('show');
+          extraInputs.setAttribute('aria-hidden','false');
+          submitBtn.classList.add('show');
+        } else if (val === 'referring_only') {
+          infoText.textContent = 'Add your bank information to receive your referral earnings and get ₦5,000 bonus.';
+          infoText.classList.add('show');
+          extraInputs.innerHTML = renderBankInputs('only_');
+          extraInputs.classList.add('show');
+          extraInputs.setAttribute('aria-hidden','false');
+          submitBtn.classList.add('show');
+        }
+      });
+
+      // validate visible inputs (returns {ok:bool, message:string})
+      function validateVisible() {
+        const baseFields = ['fullname','email','phone','dob','password'];
+        for (let id of baseFields) {
+          const el = document.getElementById(id);
+          if (!el || !el.value.trim()) return {ok:false, message:'Please complete all required fields.'};
+        }
+
+        const sel = optionSelect.value;
+        if (sel === 'investing_referring') {
+          const a = document.getElementById('ref_accName');
+          const b = document.getElementById('ref_accNumber');
+          const c = document.getElementById('ref_bankName');
+          if (!a || !a.value.trim() || !b || !b.value.trim() || !c || !c.value.trim()) {
+            return {ok:false, message:'Please fill the bank details for Investing & Referring.'};
+          }
+        } else if (sel === 'referring_only') {
+          const a = document.getElementById('only_accName');
+          const b = document.getElementById('only_accNumber');
+          const c = document.getElementById('only_bankName');
+          if (!a || !a.value.trim() || !b || !b.value.trim() || !c || !c.value.trim()) {
+            return {ok:false, message:'Please fill your bank details to receive referral earnings.'};
+          }
+        }
+
+        if (!sel) return {ok:false, message:'Please select an option from the dropdown.'};
+
+        return {ok:true, message:''};
+      }
+
+      form.addEventListener('submit', function(ev){
+        ev.preventDefault();
+
+        const v = validateVisible();
+        if (!v.ok) {
+          // small inline feedback instead of ugly alert
+          infoText.textContent = v.message;
+          infoText.classList.add('show');
+          return;
+        }
+
+        // Build user object
+        const user = {
+          name: document.getElementById('fullname').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          phone: document.getElementById('phone').value.trim(),
+          dob: document.getElementById('dob').value,
+          password: document.getElementById('password').value,
+          investmentType: optionSelect.value,
+          bank: null
+        };
+
+        if (optionSelect.value === 'investing_referring') {
+          user.bank = {
+            accountName: document.getElementById('ref_accName').value.trim(),
+            accountNumber: document.getElementById('ref_accNumber').value.trim(),
+            bankName: document.getElementById('ref_bankName').value.trim()
+          };
+        } else if (optionSelect.value === 'referring_only') {
+          user.bank = {
+            accountName: document.getElementById('only_accName').value.trim(),
+            accountNumber: document.getElementById('only_accNumber').value.trim(),
+            bankName: document.getElementById('only_bankName').value.trim()
+          };
+        }
+
+        // Save user locally
+        try { localStorage.setItem('kingc_user', JSON.stringify(user)); } catch(e){ console.warn('localStorage failed', e); }
+
+        // Redirect according to option
+        if (optionSelect.value === 'referring_only') {
+          // if you want a message before redirect, set it here. For now go straight.
+          window.location.href = 'dashboard1.html';
+        } else {
+          window.location.href = 'dashboard.html';
+        }
+      });
+    })();
   </script>
 </body>
 </html>
