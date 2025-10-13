@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>KingC Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    header {
+      width: 100%;
+      padding: 20px;
+      text-align: right;
+      background: rgba(255, 255, 255, 0.1);
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .dashboard {
+      text-align: center;
+      margin-top: 50px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 25px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.2);
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .balance {
+      font-size: 35px;
+      font-weight: bold;
+      margin: 10px 0;
+      color: #00ffcc;
+    }
+
+    .info {
+      font-size: 14px;
+      margin-bottom: 25px;
+      opacity: 0.9;
+    }
+
+    button {
+      width: 100%;
+      background: #fff;
+      color: #2c5364;
+      padding: 14px;
+      border: none;
+      border-radius: 25px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background: #eee;
+      transform: scale(1.02);
+    }
+
+    footer {
+      margin-top: auto;
+      padding: 20px;
+      font-size: 12px;
+      color: #bbb;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span id="usernameDisplay">Welcome, User</span>
+  </header>
+
+  <div class="dashboard">
+    <h2>Account Balance</h2>
+    <div class="balance" id="balanceDisplay">₦5,000</div>
+    <div class="info">
+      Use for airtime, invest/withdraw it when it’s ₦37,000.
+    </div>
+
+    <button id="copyLinkBtn">Copy Referral Link & Share</button>
+  </div>
+
+  <footer>
+    KingC Divine Investment © 2025
+  </footer>
+
+  <script>
+    // Load user data if available
+    const user = JSON.parse(localStorage.getItem('kingc_user'));
+    if (user && user.name) {
+      document.getElementById('usernameDisplay').textContent = `Welcome, ${user.name}`;
+    }
+
+    const referralLink = "This is better than doing business... Use this Trading App. It has been helping  many people financially, You can earn money by investing or by referring. You get 20% if you post it and someone invest. to get started use this link.
+👇👇👇👇👇👇👇👇👇
+ https://jeyjerry11.github.io/King-Divine-investment.com/
+  https://jeyjerry11.github.io/King-Divine-investment.com/";
+    const shareText = `This is better than doing business... Use this Trading App. It has been helping many people financially. You can earn money by investing or by referring. You get 20% if you post it and someone invests. To get started use this link 👇👇👇👇👇👇👇👇👇 \n${referralLink}`;
+
+    document.getElementById('copyLinkBtn').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(referralLink);
+        alert("Referral link copied! Opening WhatsApp...");
+        const encodedText = encodeURIComponent(shareText);
+        const whatsappUrl = `https://wa.me/?text=${encodedText}`;
+        window.open(whatsappUrl, '_blank');
+      } catch (err) {
+        alert("Failed to copy link, please copy manually.");
+      }
+    });
+
+    // Set balance to ₦5,000
+    document.getElementById('balanceDisplay').textContent = "₦5,000";
+  </script>
+</body>
+</html>
