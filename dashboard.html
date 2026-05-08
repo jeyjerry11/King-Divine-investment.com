@@ -92,7 +92,14 @@
       transition: background 0.3s, color 0.3s;
     }
 
-    /* button and logs */
+    /* Button hover effect - changes to cyan background with white text */
+    button:hover {
+      background: #00d2ff;
+      color: white;
+    }
+
+    /* ===== FOOTER SECTION ===== */
+    /* Bottom section containing withdrawal button and logs */
     footer {
       margin-top: 40px;
       text-align: center;
@@ -105,9 +112,8 @@
       border-left: 4px solid #ffc107;
       padding: 15px;
       border-radius: 8px;
-      margin: 15px 0;
-      color: #ffc107;
-      font-weight: bold;
+      margin: 15 0, 0, 0.1);
+      color: #ff4444;
     }
 
     /* ===== MOBILE RESPONSIVE STYLES ===== */
@@ -153,7 +159,13 @@
       <!-- TradingView Ticker Tape Widget - Shows live market data -->
       <!-- NGN Assets: USD/NGN, EUR/NGN, GBP/NGN -->
       <!-- Other Assets: EUR/USD, GBP/USD, Bitcoin, Gold -->
-      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-tickerRUSD", "title": "EUR/USD" },
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+      {
+      "symbols": [
+          { "proName": "FXOPEN:USDNGN", "title": "USD/NGN" },
+          { "proName": "FXOPEN:EURINGN", "title": "EUR/NGN" },
+          { "proName": "FXOPEN:GBPNGN", "title": "GBP/NGN" },
+          { "proName": "FOREXCOM:EURUSD", "title": "EUR/USD" },
           { "proName": "FOREXCOM:GBPUSD", "title": "GBP/USD" },
           { "proName": "BITSTAMP:BTCUSD", "title": "Bitcoin" },
           { "proName": "FOREXCOM:XAUUSD", "title": "Gold" }
@@ -167,6 +179,10 @@
       </script>
     </div>
   </div>
+
+  <!-- ===== STATUS MESSAGE AREA ===== -->
+  <!-- Shows loading or error messages -->
+  <div id="statusMessage"></div>
 
   <!-- ===== HEADER SECTION ===== -->
   <!-- Main header displaying user's balance and personalized welcome message -->
@@ -183,8 +199,7 @@
   <h2>Choose Your Investment Plan</h2>
   
   <!-- Notice box about minimum investment requirement -->
-  <div class="notice-box">
-    ⚠️ Minimum investment is now ₦50,000 (No more ₦5,000 plans available due to high demand)
+  <div class="noticed)
   </div>
 
   <!-- Investment plan cards - User clicks to select a plan -->
@@ -238,12 +253,7 @@
     <!-- Button to initiate withdrawal request -->
     <button onclick="withdraw()">Withdraw Investment</button>
     
-    <!-- Container displaying all withdrawal history and status -->
-    <div id="withdraw-log"></div>
-  </footer>
-
-  <!-- Motivational message at bottom of page -->
-  <h1 style="text-align:center; margin-top: 40px;">In Jesus We Trust</h1>
+    <!-- Container displaying all We Trust</h1>
 
   <!-- ===== JAVASCRIPT LOGIC ===== -->
   <!-- All application functionality and data persistence logic -->
@@ -263,213 +273,217 @@
      * as long as browser cache is not cleared
      */
 
-    // Step 1: Retrieve user data from localStorage (persists across sessions)
-    // If user logged in before, their data will be here
-    let user = JSON.parse(localStorage.getItem("kingc_user"));
-    
-    // Step 2: Validate user exists - redirect to login if not found
-    if (!user) {
-      alert("User not found. Redirecting to login.");
-      window.location.href = "login.html";
+    // Function to show status messages
+    function showStatus(message, type = 'loading') {
+      const statusDiv = document.getElementById('statusMessage');
+      statusDiv.className = `status-message ${type}`;
+      statusDiv.textContent = message;
     }
 
-    // Step 3: Display personalized welcome message with user's name
-    document.getElementById("username").textContent = "Welcome, " + user.name;
+    // Function to clear status messages
+    function clearStatus() {
+      const statusDiv = document.getElementById('statusMessage');
+      statusDiv.innerHTML = '';
+    }
 
-    // Step 4: Get current timestamp in milliseconds for time calculations
-    let now = Date.now();
-    
-    // Step 5: Initialize string to hold investment details HTML
-    let investmentText = "";
-    
-    // Step 6: Get user's balance from localStorage or initialize to 0
-    let balance = user.balance || 0;
-
-    // Step 7: Initialize investments array if it doesn't exist yet
-    if (!user.investments) user.investments = [];
-
-    /**
-     * ========================================
-     * PROCESS EACH INVESTMENT
-     * ========================================
-     * This loop processes all investments and:
-     * 1. Calculates elapsed time since investment was made
-     * 2. Adds principal amount to balance (immediately after investment)
-     * 3. Adds profit (100% of principal) after 45 minutes maturity period
-     * 4. Updates investment status (pending or completed)
-     * 5. Builds HTML display for investment history
-     */
-    user.investments.forEach((investment) => {
-      // Calculate time elapsed since investment was made (in milliseconds)
-      const elapsed = now - investment.timestamp;
+    try {
+      // Step 1: Retrieve user data from localStorage (persists across sessions)
+      // If user logged in before, their data will be here
+      let user = JSON.parse(localStorage.getItem("kingc_user"));
       
-      // Check if 45 minutes have passed (45 minutes * 60 seconds * 1000 milliseconds)
-      const matured = elapsed >= 45 * 60 * 1000;
-      
-      // Convert investment timestamp to readable date format
-      const investedDate = new Date(investment.timestamp).toLocaleString();
-
-      /**
-       * Step A: Add invested principal times
-       */
-      if (!investment.initialAdded) {
-        balance += investment.amount;
-        investment.initialAdded = true;
+      // Step 2: Validate user exists - show error if not found
+      if (!user) {
+        showStatus('❌ User data not found. Redirecting to login in 2 seconds...', 'error');
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 2000);
+        throw new Error("User not found");
       }
 
-      /**
-       * Step B: Credit profit (100% of principal) after 45 minutes maturity
-       * This means if user invests ₦100,000:
-       * - They get ₦100,000 back immediately
-       * - After 45 minutes, they get ₦100,000 profit (100% return)
-       * - Total balance becomes ₦200,000
-       * Flag 'credited' prevents adding profit multiple times
-       */
-      if (matured && !investment.credited) {
-        balance += investment.amount; // 100% profit = adding original amount again
-        investment.credited = true;
-      }
+      // Clear status message if Get user's balance from localStorage or initialize to 0
+      let balance = user.balance || 0;
+
+      // Step 7: Initialize investments array if it doesn't exist yet
+      if (!user.investments) user.investments = [];
 
       /**
-       * Step C: Determine investment status
-       * Shows user whether their profit has been added or still waiting
+       * ========================================
+       * PROCESS EACH INVESTMENT
+       * ========================================
+       * This loop processes all investments and:
+       * 1. Calculates elapsed time since investment was made
+       * 2. Adds principal amount to balance (immediately after investment)
+       * 3. Adds profit (100% of principal) after 45 minutes maturity period
+       * 4. Updates investment status (pending or completed)
+       * 5. Builds HTML display for investment history
        */
-      const status = investment.credited
-        ? "✅ Profit Added"
-        : "⏳ Awaiting 45 Minutes";
+      user.investments.forEach((investment) => {
+        // Calculate time elapsed since investment was made (in milliseconds)
+        const elapsed = now - investment.timestamp;
+        
+        // Check if 45 minutes have passed (45 minutes * 60 seconds * 1000 milliseconds)
+        const matured = elapsed >= 45 * 60 * 1000;
+        
+        // Convert investment timestamp to readable date format
+        const investedDate = new Date(investment.timestamp).toLocaleString();
+
+        /**
+         * Step A: Add invested principal immediately if not already added
+         * This ensures the original amount is added to balance right away
+         * Flag 'initialAdded' prevents adding principal multiple times
+         */
+        if (!investment.initialAdded) {
+          balance += investment.amount;
+          investment.initialAdded = true;
+        }
+
+        /**
+         * Step B: Credit profit (100% of principal) after 45 minutes maturity
+         * This means if user invests ₦100,000:
+         * - They get ₦100,000 back immediately
+         * - After 45 minutes, they get ₦100,000 profit (100% return)
+         * - Total balance becomes ₦200,000
+         * Flag 'credited' prevents adding profit multiple times
+         */
+        if (matured && !investment.credited) {
+          balance += investment.amount; // 100% profit = adding original amount again
+          investment.credited = true;
+        }
+
+        /**
+         * Step C: Determine investment status
+         * Shows user whether their profit has been added or still waiting
+         */
+        const status = investment.credited
+          ? "✅ Profit Added"
+          : "⏳ Awaiting 45 Minutes";
+
+        /**
+         * Step D: Build HTML to display this investment in the page
+         * Shows investment amount, date, and current status
+         */
+        investmentText += `<p>✅ You invested ₦${investment.amount} on ${investedDate}. Your deposit was successful. ${status}.</p>`;) => {
+        // Calculate hours passed since withdrawal was requested
+        const hoursPassed = (now - w.timestamp) / (1000 * 60 * 60);
+        
+        /**
+         * Withdrawal is marked complete after 1.5 hours
+         * This gives processing time for bank transfers
+         */
+        const isComplete = hoursPassed >= 1.5;
+        
+        /**
+         * Build HTML to display withdrawal record
+         * Shows amount, bank details, and completion status
+         */
+        withdrawLogs += `<p>Withdrawn ₦${w.amount} to ${w.bank} (${w.account}) - <strong>${isComplete ? "✅ Successful" : "⏳ Pending"}</strong></p>`;
+      });
 
       /**
-       * Step D: Build HTML to display this investment in the page
-       * Shows investment amount, date, and current status
+       * ========================================
+       * SAVE & DISPLAY UPDATES
+       * ========================================
+       * Update balance in memory and persist to localStorage
+       * This ensures data survives page refresh
        */
-      investmentText += `<p>✅ You invested ₦${investment.amount} on ${investedDate}. Your deposit was successful. ${status}.</p>`;
-    });
-
-    /**
-     * ========================================
-     * PROCESS WITHDRAWAL HISTORY
-     * ========================================
-     * This loop displays all withdrawal requests and their status
-     * Withdrawal is marked "Successful" after 1.5 hours
-     */
-    let withdrawLogs = "";
-    
-    // Initialize withdrawals array if it doesn't exist yet
-    if (!user.withdrawals) user.withdrawals = [];
-
-    // Process each withdrawal transaction
-    user.withdrawals.forEach((w) => {
-      // Calculate hours passed since withdrawal was requested
-      const hoursPassed = (now - w.timestamp) / (1000 * 60 * 60);
+      
+      // Update user's current total balance
+      user.balance = balance;
       
       /**
-       * Withdrawal is marked complete after 1.5 hours
-       * This gives processing time for bank transfers
-       */
-      const isComplete = hoursPassed >= 1.5;
-      
-      /**
-       * Build HTML to display withdrawal record
-       * Shows amount, bank details, and completion status
-       */
-      withdrawLogs += `<p>Withdrawn ₦${w.amount} to ${w.bank} (${w.account}) - <strong>${isComplete ? "✅ Successful" : "⏳ Pending"}</strong></p>`;
-    });
-
-    /**
-     * ========================================
-     * SAVE & DISPLAY UPDATES
-     * ========================================
-     * Update balance in memory and persist to localStorage
-     * This ensures data survives page refresh
-     */
-    
-    // Update user's current total balance
-    user.balance = balance;
-    
-    /**
-     * CRITICAL: Save all user data to localStorage
-     * This is the KEY to persistent storage
-     * Data saved here will persist until browser is cleared
-     * Every update must call this to save changes
-     */
-    localStorage.setItem("kingc_user", JSON.stringify(user));
-
-    // Display user's updated balance on the page
-    document.getElementById("balance").textContent = user.balance;
-    
-    // Display all investment details on the page
-    document.getElementById("investment-details").innerHTML = investmentText;
-    
-    // Display all withdrawal logs on the page
-    document.getElementById("withdraw-log").innerHTML = withdrawLogs;
-
-    /**
-     * ========================================
-     * INVESTMENT SELECTION FUNCTION
-     * ========================================
-     * Called when user clicks on any investment plan card
-     * 
-     * @param {number} amount - The investment amount selected (in Naira)
-     * 
-     * Process:
-     * 1. Store selected amount with current timestamp
-     * 2. Save to localStorage before redirecting
-     * 3. Redirect to deposit page for payment confirmation
-     */
-    function selectPlan(amount) {
-      // Store the selected investment amount and current time
-      user.investment = { amount, timestamp: Date.now() };
-      
-      /**
-       * Save updated user data to localStorage
-       * MUST be done before redirect or data will be lost
+       * CRITICAL: Save all user data to localStorage
+       * This is the KEY to persistent storage
+       * Data saved here will persist until browser is cleared
+       * Every update must call this to save changes
        */
       localStorage.setItem("kingc_user", JSON.stringify(user));
+
+      // Display user's updated balance on the page
+      document.getElementById("balance").textContent = user.balance;
       
-      // Redirect to deposit confirmation page
-      window.location.href = "deposit.html";
-    }
+      // Display all investment details on the page
+      if (investmentText) {
+        document.getElementById("investment-details").innerHTML = investmentText;
+      }
+      
+      // Display all withdrawal logs on the page
+      if (withdrawLogs) {
+        document.getElementById("withdraw-log").innerHTML = withdrawLogs;
+      }
 
-    /**
-     * ========================================
-     * WITHDRAWAL FUNCTION
-     * ========================================
-     * Called when user clicks "Withdraw Investment" button
-     * 
-     * Redirects to withdrawal page where user can:
-     * - Enter withdrawal amount
-     * - Select bank account
-     * - Confirm withdrawal request
-     */
-    function withdraw() {
-      window.location.href = "withdraw.html";
-    }
+      /**
+       * ========================================
+       * INVESTMENT SELECTION FUNCTION
+       * ========================================
+       * Called when user clicks on any investment plan card
+       * 
+       * @param {number} amount - The investment amount selected (in Naira)
+       * 
+       * Process:
+       * 1. Store selected amount with current timestamp
+       * 2. Save to localStorage before redirecting
+       * 3. Redirect to deposit page for payment confirmation
+       */
+      window.selectPlan = function(amount) {
+        // Store the selected investment amount and current time
+        user.investment = { amount, timestamp: Date.now() };
+        
+        /**
+         * Save updated user data to localStorage
+         * MUST be done before redirect or data will be lost
+         */
+        localStorage.setItem("kingc_user", JSON.stringify(user));
+        
+        // Redirect to deposit confirmation page
+        window.location.href = "deposit.html";
+      };
 
-    /**
-     * ========================================
-     * AUTO-REFRESH FEATURE (OPTIONAL)
-     * ========================================
-     * Uncomment the code below to enable automatic page refresh
-     * This keeps investment status updated without user interaction
-     * 
-     * Current setting: Refresh every 30 seconds (30000 milliseconds)
-     * You can adjust the interval as needed
-     * 
-     * Benefits:
-     * - Investment status updates automatically
-     * - User sees profit added without manual refresh
-     * 
-     * Trade-offs:
-     * - Uses more bandwidth
-     * - May annoy users with constant refreshing
-     * 
-     * To enable: Remove the // from the lines below
-     */
-    
-    // Uncomment these lines to enable auto-refresh:
-    // setInterval(() => {
-    //   location.reload(); // Refresh the page
-    // }, 30000); // Refresh every 30 seconds (30000 milliseconds = 30 seconds)
+      /**
+       * ========================================
+       * WITHDRAWAL FUNCTION
+       * ========================================
+       * Called when user clicks "Withdraw Investment" button
+       * 
+       * Redirects to withdrawal page where user can:
+       * - Enter withdrawal amount
+       * - Select bank account
+       * - Confirm withdrawal request
+       */
+      window.withdraw = function() {
+        window.location.href = "withdraw.html";
+      };
+
+      /**
+       * ========================================
+       * AUTO-REFRESH FEATURE (OPTIONAL)
+       * ========================================
+       * Uncomment the code below to enable automatic page refresh
+       * This keeps investment status updated without user interaction
+       * 
+       * Current setting: Refresh every 30 seconds (30000 milliseconds)
+       * You can adjust the interval as needed
+       * 
+       * Benefits:
+       * - Investment status updates automatically
+       * - User sees profit added without manual refresh
+       * 
+       * Trade-offs:
+       * - Uses more bandwidth
+       * - May annoy users with constant refreshing
+       * 
+       * To enable: Remove the // from the lines below
+       */
+      
+      // Uncomment these lines to enable auto-refresh:
+      // setInterval(() => {
+      //   location.reload(); // Refresh the page
+      // }, 30000); // Refresh every 30 seconds (30000 milliseconds = 30 seconds)
+
+    } catch(error) {
+      // Log any errors to console for debugging
+      console.error("Dashboard Error:", error);
+      showStatus('❌ An error occurred. Please refresh the page or go back to login.', 'error');
+    }
 
   </script>
 </body>
