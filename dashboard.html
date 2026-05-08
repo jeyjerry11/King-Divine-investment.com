@@ -5,64 +5,125 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard - KingC</title>
   <style>
+    /* ===== MAIN BODY STYLES ===== */
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #    h1, h2, h3 {
-      margin: 0;
+      /* Blue gradient background for professional look */
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: white;
+      min-height: 100vh;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    /* ===== HEADING STYLES ===== */
+    h1, h2, h3 {
+      margin: 10px 0;
       word-wrap: break-word;
     }
 
+    /* ===== HEADER SECTION ===== */
+    /* Top navigation bar with balance and username */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    /* ===== INVESTMENT PLANS GRID ===== */
+    /* Responsive grid layout for plan cards */
     .plans {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 15px;
+      margin-top: 20px;
+      margin-bottom: 20px;
     }
 
+    /* ===== PLAN CARD STYLES ===== */
+    /* Individual investment plan cards with hover effects */
     .plan-card {
       background: rgba(255,255,255,0.1);
       padding: 15px;
       border-radius: 15px;
       text-align: center;
       cursor: pointer;
-      transition: transform 0.3s ease;
+      transition: transform 0.3s ease, background 0.3s ease;
+      border: 1px solid rgba(255,255,255,0.1);
     }
 
+    /* Hover effect - card scales and background brightens */
     .plan-card:hover {
       transform: scale(1.05);
       background: rgba(255,255,255,0.2);
     }
 
+    /* ===== DETAILS SECTIONS ===== */
+    /* Investment details and withdrawal logs display area */
     #investment-details, #withdraw-log {
-      margin-top: 30px;
+      margin: 20px 0;
       background: rgba(255,255,255,0.05);
       padding: 15px;
       border-radius: 10px;
       max-height: 300px;
       overflow-y: auto;
+      font-size: 0.95rem;
     }
 
+    /* ===== BUTTON STYLES ===== */
+    /* Action buttons for withdrawals and transactions */
     button {
-      background: white;
+      background: #ffffff;
       color: #0f2027;
-      padding: 10px 20px;
+      padding: 12px 25px;
       border: none;
-      border-radius: 20px;
+      border-radius: 25px;
       font-weight: bold;
       cursor: pointer;
-      margin-top: 15px;
+      font-size: 16px;
+      transition: background 0.3s, color 0.3s;
     }
 
+    /* Button hover effect - blue background with white text */
     button:hover {
-      background: #e0e0e0;
+      background: #00d2ff;
+      color: white;
     }
 
+    /* ===== FOOTER SECTION ===== */
     footer {
       margin-top: 40px;
       text-align: center;
     }
 
+    /* ===== NOTICE/ALERT BOX ===== */
+    .notice-box {
+      background: rgba(255, 193, 7, 0.1);
+      border-left: 4px solid #ffc107;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+      color: #ffc107;
+      font-weight: bold;
+    }
+
+    /* ===== MOBILE RESPONSIVE STYLES ===== */
     @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      button {
+        width: 100%;
+        margin: 10px 0;
+      }
+
       h3 {
         font-size: 16px;
       }
@@ -74,197 +135,214 @@
       .plan-card p {
         font-size: 14px;
       }
-
-      button {
-        width: 100%;
-      }
-    }
-  </style>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      /* Fixed the broken gradient and added colors */
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: white;
-      min-height: 100vh;
-      padding: 20px;
-    } /* Added the missing closing brace here */
-
-    h1, h2, h3 {
-      margin: 10px 0;
-      word-wrap: break-word;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .plans {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
-    }
-
-    .plan-card {
-      background: rgba(255,255,255,0.1);
-      padding: 15px;
-      border-radius: 15px;
-      text-align: center;
-      cursor: pointer;
-      transition: transform 0.3s ease, background 0.3s ease;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .plan-card:hover {
-      transform: scale(1.05);
-      background: rgba(255,255,255,0.2);
-    }
-
-    #investment-details, #withdraw-log {
-      margin: 20px 0;
-      background: rgba(255,255,255,0.05);
-      padding: 15px;
-      border-radius: 10px;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    button {
-      background: #ffffff;
-      color: #0f2027;
-      padding: 12px 25px;
-      border: none;
-      border-radius: 25px;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background: #00d2ff;
-      color: white;
-    }
-
-    footer {
-      margin-top: 40px;
-      text-align: center;
-    }
-
-    @media (max-width: 600px) {
-      header {
-        flex-direction: column;
-        text-align: center;
-      }
-      
-      button {
-        width: 100%;
-      }
     }
   </style>
 
 </head>
 <body>
-   <div class="forex-container">
-        <div class="tradingview-widget-container">
-            <div class="tradingview-widget-container__widget"></div>
-          
-  <header>
-    <h3>Total Balance: ₦<span id="balance">0</span></h3>
-    <h3 id="username">Welcome, User</h3>
-  </header>
-
-  <div id="investment-details"></div>
-
-  <h2>Choose Your Investment Plan</h2>
-  <div class="plans">
-<p> No more small investment of 5000 available,</p><p> minimum to invest is now from 50,000, Since  too many investors</p>
-    <div class="plan-card" onclick="selectPlan(5000)"><h3>₦5,000</h3><p>Get ₦15,000 in 1 hour</p></div>
-    <div class="plan-card" onclick="selectPlan(50000)"><h3>₦50,000</h3><p>Get ₦110,000 in 1 hour</p></div>
-    <div class="plan-card" onclick="selectPlan(80000)"><h3>₦80,000</h3><p>Get ₦170,000 in 45 minutes</p></div>
-    <div class="plan-card" onclick="selectPlan(100000)"><h3>₦100,000</h3><p>Get ₦200,000 in 45 minutes</p></div>
-    <div class="plan-card" onclick="selectPlan(500000)"><h3>₦500,000</h3><p>Get ₦1,000,000 in 45 minutes</p></div>
-    <div class="plan-card" onclick="selectPlan(5000000)"><h3>₦5,000,000</h3><p>Get ₦10,000,000 in 1 hour</p></div>
-    <div class="plan-card" onclick="selectPlan(10000000)"><h3>₦10,000,000</h3><p>Get ₦20,000,000 in 45 minutes (Diamond Plan)</p></div>
+  
+  <!-- ===== FOREX TICKER WIDGET ===== -->
+  <!-- Displays real-time forex and asset prices including NGN pairs -->
+  <div class="forex-container">
+    <div class="tradingview-widget-container">
+      <div class="tradingview-widget-container__widget"></div>
+      
+      <!-- TradingView widget for live forex ticker with NGN assets -->
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+      {
+      "symbols": [
+          { "proName": "FXOPEN:USDNGN", "title": "USD/NGN" },
+          { "proName": "FXOPEN:EURINGN", "title": "EUR/NGN" },
+          { "proName": "FXOPEN:GBPNGN", "title": "GBP/NGN" },
+          { "proName": "FOREXCOM:EURUSD", "title": "EUR/USD" },
+          { "proName": "FOREXCOM:GBPUSD", "title": "GBP/USD" },
+          { "proName": "BITSTAMP:BTCUSD", "title": "Bitcoin" },
+          { "proName": "FOREXCOM:XAUUSD", "title": "Gold" }
+      ],
+      "showSymbolLogo": true,
+      "colorTheme": "dark",
+      "isTransparent": true,
+      "displayMode": "adaptive",
+      "locale": "en"
+      }
+      </script>
+    </div>
   </div>
 
+  <!-- ===== HEADER SECTION ===== -->
+  <!-- Displays user's total balance and welcome message -->
+  <header>
+    <h₦10,000,000 - Diamond (Elite) plan -->
+    <div class="plan-card" onclick="selectPlan(10000000)">
+      <h3>💎 ₦10,000,000</h3>
+      <p>Get ₦20,000,000 in 45 minutes (Diamond Plan)</p>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER SECTION ===== -->
   <footer>
+    <!-- Withdraw button - redirects to withdrawal page -->
     <button onclick="withdraw()">Withdraw Investment</button>
+    
+    <!-- Displays withdrawal history and status -->
     <div id="withdraw-log"></div>
   </footer>
 
+  <!-- Motivational message -->
   <h1 style="text-align:center; margin-top: 40px;">In Jesus We Trust</h1>
 
+  <!-- ===== JAVASCRIPT LOGIC ===== -->
   <script>
+    /**
+     * ========================================
+     * LOCAL STORAGE PERSISTENCE MANAGEMENT
+     * ========================================
+     * Data persists in browser until user:
+     * - Clears browser cache/cookies
+     * - Uses private/incognito mode (data lost on close)
+     * - Manually clears localStorage
+     */
+
+    // Retrieve user data from localStorage (persists across sessions)
     let user = JSON.parse(localStorage.getItem("kingc_user"));
+    
+    // Redirect to login if no user found
     if (!user) {
       alert("User not found. Redirecting to login.");
       window.location.href = "login.html";
     }
 
+    // Display personalized welcome message with user's name
     document.getElementById("username").textContent = "Welcome, " + user.name;
 
+    // Get current timestamp in milliseconds
     let now = Date.now();
+    
+    // String to hold all investment HTML content
     let investmentText = "";
+    
+    // Initialize balance from localStorage or set to 0
     let balance = user.balance || 0;
 
+    // Initialize investments array if it doesn't exist
     if (!user.investments) user.investments = [];
 
+    /**
+     * ========================================
+     * PROCESS EACH INVESTMENT
+     * ========================================
+     * Loop through all investments and:
+     * 1. Calculate elapsed time since investment
+     * 2. Add principal amount if not already added
+     * 3. Credit profit after 45 minutes maturity
+     * 4. Display investment status
+     */
     user.investments.forEach((investment) => {
+      // Calculate time elapsed since investment (in milliseconds)
       const elapsed = now - investment.timestamp;
-      const matured = elapsed >= 45 * 60 * 1000; // 45 minutes (in milliseconds)
+      
+      // Check if 45 minutes have passed (45 * 60 * 1000 milliseconds)
+      const matured = elapsed >= 45 * 60 * 1000;
+      
+      // Convert timestamp to readable date format
       const investedDate = new Date(investment.timestamp).toLocaleString();
 
-      // Add invested amount immediately if not added
+      // Step 1: Add invested amount immediately if not already added (preserves principal)
       if (!investment.initialAdded) {
         balance += investment.amount;
         investment.initialAdded = true;
       }
 
-      // Credit profit after 45 minutes
+      // Step 2: Credit profit (100% of principal) after 45 minutes maturity
       if (matured && !investment.credited) {
-        balance += investment.amount; // 100% profit
+        balance += investment.amount; // 100% profit = amount * 1
         investment.credited = true;
       }
 
+      // Determine status based on maturity
       const status = investment.credited
         ? "✅ Profit Added"
         : "⏳ Awaiting 45 Minutes";
 
+      // Add investment record to display
       investmentText += `<p>✅ You invested ₦${investment.amount} on ${investedDate}. Your deposit was successful. ${status}.</p>`;
     });
 
+    /**
+     * ========================================
+     * PROCESS WITHDRAWAL HISTORY
+     * ========================================
+     * Display all withdrawal transactions
+     * and their current status
+     */
     let withdrawLogs = "";
+    
+    // Initialize withdrawals array if it doesn't exist
     if (!user.withdrawals) user.withdrawals = [];
 
+    // Process each withdrawal record
     user.withdrawals.forEach((w) => {
+      // Calculate hours passed since withdrawal request
       const hoursPassed = (now - w.timestamp) / (1000 * 60 * 60);
-      const isComplete = hoursPassed >= 1.5; // Assume 1.5 hours
-      withdrawLogs += `<p>Withdrawn ₦${w.amount} to ${w.bank} (${w.account}) - <strong>${isComplete ? "✅ Successful" : "⏳ Pending"}</strong></p>`;
-    });
-
-    user.balance = balance;
+      
+      // Withdrawal is considered complete after 1.5 hours
+      const isComplete = hoursPassed >= 1.5;
+      
+      // Add withdrawal record to display with status
+      withdrawLogs += `<p>Withdrawn ₦${w.amount} to ${w.bank: Save all changes to localStorage for persistence
+    // This keeps data until browser is manually cleared
     localStorage.setItem("kingc_user", JSON.stringify(user));
 
+    // Display updated balance on page
     document.getElementById("balance").textContent = user.balance;
+    
+    // Display investment details
     document.getElementById("investment-details").innerHTML = investmentText;
+    
+    // Display withdrawal logs
     document.getElementById("withdraw-log").innerHTML = withdrawLogs;
 
+    /**
+     * ========================================
+     * INVESTMENT SELECTION FUNCTION
+     * ========================================
+     * Called when user clicks on an investment plan
+     * @param {number} amount - The investment amount in Naira
+     */
     function selectPlan(amount) {
+      // Store selected investment with current timestamp
       user.investment = { amount, timestamp: Date.now() };
+      
+      // Save to localStorage before redirecting
       localStorage.setItem("kingc_user", JSON.stringify(user));
+      
+      // Redirect to deposit confirmation page
       window.location.href = "deposit.html";
     }
 
+    /**
+     * ========================================
+     * WITHDRAWAL FUNCTION
+     * ========================================
+     * Redirects user to withdrawal page
+     * where they can request fund withdrawals
+     */
     function withdraw() {
       window.location.href = "withdraw.html";
     }
+
+    /**
+     * ========================================
+     * AUTO-REFRESH FEATURE (Optional)
+     * ========================================
+     * Uncomment to refresh page every 30 seconds
+     * This keeps investment status updated
+     * WITHOUT requiring user page refresh
+     */
+    // setInterval(() => {
+    //   location.reload();
+    // }, 30000); // Refresh every 30 seconds (30000ms)
+
   </script>
 </body>
 </html>
