@@ -103,6 +103,42 @@
   
   <div class="tradingview-widget-container" style="margin-bottom: 20px;">
     <div class="tradingview-widget-container__widget"></div>
+
+<script>
+    /**
+     * COMMENT SYSTEM LOGIC
+     * This handles saving and displaying user comments locally
+     */
+    function loadComments() {
+      const comments = JSON.parse(localStorage.getItem("kingc_comments")) || [];
+      const display = document.getElementById('commentsDisplay');
+      
+      // Keep the initial hardcoded proof and add new ones
+      let html = display.innerHTML; 
+      
+      comments.reverse().forEach(c => {
+        html += `
+          <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 3px solid #00ff88;">
+            <strong style="color: #00ff88;">${c.name}</strong> <small style="color: #888;">• ${c.time}</small>
+            <p style="font-size: 14px; margin-top: 5px;">${c.text}</p>
+          </div>`;
+      });
+      display.innerHTML = html;
+    }
+
+    function addComment() {
+      const name = document.getElementById('commentName').value;
+      const text = document.getElementById('commentText').value;
+
+      if (!name || !text) {
+        alert("Please fill in both name and feedback!");
+        return;
+      }
+
+      const newComment = {
+        name: name,
+        text
+
     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
     {
       "symbols": [
