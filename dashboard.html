@@ -184,6 +184,23 @@
     <h3 style="margin-top: 30px;">Withdrawal Logs</h3>
     <div id="withdraw-log"><p style="color: #94a3b8;">No withdrawal records found.</p></div>
   </footer>
+<div style="margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px;">
+    <h2 style="text-align: center; color: var(--primary);">Live Investor Feed</h2>
+    
+    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin-bottom: 20px;">
+      <input type="text" id="commentName" placeholder="Your Name" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: #1a1c23; color: white;">
+      <textarea id="commentText" placeholder="Share your investment experience..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #1a1c23; color: white; height: 80px;"></textarea>
+      <button onclick="addComment()" style="margin-top: 10px; width: 100%; background: #00ff88; color: black;">Post Feedback</button>
+    </div>
+
+    <div id="commentsDisplay" style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
+      <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 3px solid #00ff88;">
+        <strong style="color: #00ff88;">Chinedu O.</strong> <small style="color: #888;">• Just now</small>
+        <p style="font-size: 14px; margin-top: 5px;">I just received my ₦200,000 alert! Fast and reliable. KingC is the real deal. 🚀</p>
+      </div>
+    </div>
+  </div>
+
 
   <script>
     const now = Date.now(); // CRITICAL: Fixed the missing 'now' variable
