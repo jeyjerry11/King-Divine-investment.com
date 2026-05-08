@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard - KingC</title>
   <style>
+    /* ===== MAIN BODY STYLES ===== */
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
       color: white;
       min-height: 100vh;
@@ -15,6 +16,9 @@
       box-sizing: border-box;
     }
 
+    h1, h2, h3 { margin: 10px 0; word-wrap: break-word; }
+
+    /* ===== HEADER SECTION ===== */
     header {
       display: flex;
       justify-content: space-between;
@@ -25,9 +29,10 @@
       gap: 15px;
     }
 
+    /* ===== INVESTMENT PLANS GRID ===== */
     .plans {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 15px;
       margin: 20px 0;
     }
@@ -48,27 +53,22 @@
       border-color: #00d2ff;
     }
 
+    /* ===== DETAILS SECTIONS ===== */
     #investment-details, #withdraw-log {
       margin: 20px 0;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.2);
       padding: 15px;
       border-radius: 10px;
+      max-height: 300px;
+      overflow-y: auto;
       border: 1px solid rgba(255,255,255,0.05);
     }
 
-    .notice-box {
-      background: rgba(255, 193, 7, 0.15);
-      border-left: 4px solid #ffc107;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      color: #ffeb3b;
-    }
-
+    /* ===== BUTTON STYLES ===== */
     button {
       background: #ffffff;
       color: #0f2027;
-      padding: 12px 30px;
+      padding: 12px 25px;
       border: none;
       border-radius: 25px;
       font-weight: bold;
@@ -80,13 +80,27 @@
     button:hover {
       background: #00d2ff;
       color: white;
+      box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
     }
 
-    footer { margin-top: 40px; text-align: center; }
+    .notice-box {
+      background: rgba(255, 193, 7, 0.15);
+      border-left: 4px solid #ffc107;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      color: #ffeb3b;
+    }
+
+    /* ===== MOBILE RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      header { flex-direction: column; text-align: center; }
+      button { width: 100%; }
+    }
   </style>
 </head>
 <body>
-
+  
   <div class="tradingview-widget-container" style="margin-bottom: 20px;">
     <div class="tradingview-widget-container__widget"></div>
     <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
@@ -104,149 +118,108 @@
     </script>
   </div>
 
+  <div id="statusMessage"></div>
+
   <header>
     <h3>Balance: ₦<span id="balance">0</span></h3>
     <h3 id="username">Welcome!</h3>
   </header>
 
   <div id="investment-details">
-    <p>No active investments.</p>
+    <p style="color: #94a3b8;">No active investment history.</p>
   </div>
 
-  <h2>Select an Investment Plan</h2>
+  <h2>Choose Your Investment Plan</h2>
+  
   <div class="notice-box">
-    ⚠️ Minimum recommended deposit is ₦50,000 for standard accounts.
+    <strong>Notice:</strong> Minimum recommended deposit for optimal growth is ₦5,000.
   </div>
 
   <div class="plans">
-    <div class="plan-card" onclick="selectPlan(5000)"><h3>₦5,000</h3><p>Get ₦15,000 (1hr)</p></div>
-    <div class="plan-card" onclick="selectPlan(50000)"><h3>₦50,000</h3><p>Get ₦110,000 (1hr)</p></div>
-    <div class="plan-card" onclick="selectPlan(100000)"><h3>₦100,000</h3><p>Get ₦200,000 (45m)</p></div>
-    <div class="plan-card" onclick="selectPlan(500000)"><h3>₦500,000</h3><p>Get ₦1,000,000 (45m)</p></div>
+    <div class="plan-card" onclick="selectPlan(5000)"><h3>₦5,000</h3><p>Return: ₦15,000 (1hr)</p></div>
+    <div class="plan-card" onclick="selectPlan(50000)"><h3>₦50,000</h3><p>Return: ₦110,000 (1hr)</p></div>
+    <div class="plan-card" onclick="selectPlan(100000)"><h3>₦100,000</h3><p>Return: ₦200,000 (45m)</p></div>
+    <div class="plan-card" onclick="selectPlan(500000)"><h3>₦500,000</h3><p>Return: ₦1,000,000 (45m)</p></div>
+    <div class="plan-card" onclick="selectPlan(10000000)"><h3>💎 ₦10M</h3><p>Return: ₦20M (45m)</p></div>
   </div>
 
   <footer>
-    <button onclick="withdraw()">Withdraw Funds</button>
-    <h3>Withdrawal Logs</h3>
-    <div id="withdraw-log"><p>No withdrawals yet.</p></div>
+    <button onclick="withdraw()">Withdraw Investment</button>
+    <h3 style="margin-top: 30px;">Withdrawal Logs</h3>
+    <div id="withdraw-log"><p style="color: #94a3b8;">No withdrawal records found.</p></div>
   </footer>
-  <div style="margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px;">
-    <h2 style="text-align: center; color: var(--primary);">Live Investor Feed</h2>
-    
-    <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin-bottom: 20px;">
-      <input type="text" id="commentName" placeholder="Your Name" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: #1a1c23; color: white;">
-      <textarea id="commentText" placeholder="Share your investment experience..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #1a1c23; color: white; height: 80px;"></textarea>
-      <button onclick="addComment()" style="margin-top: 10px; width: 100%; background: #00ff88; color: black;">Post Feedback</button>
-    </div>
-
-    <div id="commentsDisplay" style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
-      <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 3px solid #00ff88;">
-        <strong style="color: #00ff88;">Chinedu O.</strong> <small style="color: #888;">• Just now</small>
-        <p style="font-size: 14px; margin-top: 5px;">I just received my ₦200,000 alert! Fast and reliable. KingC is the real deal. 🚀</p>
-      </div>
-    </div>
-  </div>
 
   <script>
-    /**
-     * COMMENT SYSTEM LOGIC
-     * This handles saving and displaying user comments locally
-     */
-    function loadComments() {
-      const comments = JSON.parse(localStorage.getItem("kingc_comments")) || [];
-      const display = document.getElementById('commentsDisplay');
-      
-      // Keep the initial hardcoded proof and add new ones
-      let html = display.innerHTML; 
-      
-      comments.reverse().forEach(c => {
-        html += `
-          <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 3px solid #00ff88;">
-            <strong style="color: #00ff88;">${c.name}</strong> <small style="color: #888;">• ${c.time}</small>
-            <p style="font-size: 14px; margin-top: 5px;">${c.text}</p>
-          </div>`;
-      });
-      display.innerHTML = html;
-    }
-
-    function addComment() {
-      const name = document.getElementById('commentName').value;
-      const text = document.getElementById('commentText').value;
-
-      if (!name || !text) {
-        alert("Please fill in both name and feedback!");
-        return;
-      }
-
-      const newComment = {
-        name: name,
-        text
-
-  <script>
-    const now = Date.now();
+    const now = Date.now(); // CRITICAL: Fixed the missing 'now' variable
     let investmentText = "";
     let withdrawLogs = "";
+
+    function showStatus(message, type = 'loading') {
+      const statusDiv = document.getElementById('statusMessage');
+      statusDiv.innerHTML = `<div style="padding:10px; margin-bottom:10px; border-radius:5px; background:${type === 'error' ? '#ff4444' : '#00d2ff'}">${message}</div>`;
+    }
 
     try {
       let user = JSON.parse(localStorage.getItem("kingc_user"));
       
       if (!user) {
-        alert("Session expired. Redirecting...");
-        window.location.href = "login.html";
-      }
+        showStatus('❌ User data not found. Redirecting...', 'error');
+        setTimeout(() => { window.location.href = "login.html"; }, 2000);
+      } else {
+        document.getElementById("username").textContent = `Welcome, ${user.username || 'Investor'}`;
+        let balance = parseFloat(user.balance) || 0;
 
-      document.getElementById("username").innerText = `Welcome, ${user.username || 'User'}`;
-      let balance = parseFloat(user.balance) || 0;
+        // Process Investments
+        if (user.investments && user.investments.length > 0) {
+          user.investments.forEach((inv) => {
+            const elapsed = now - inv.timestamp;
+            const matured = elapsed >= 45 * 60 * 1000;
+            
+            if (!inv.initialAdded) {
+              balance += inv.amount;
+              inv.initialAdded = true;
+            }
+            if (matured && !inv.credited) {
+              balance += inv.amount; 
+              inv.credited = true;
+            }
+            const status = inv.credited ? "✅ Profit Added" : "⏳ Awaiting Maturity (45m)";
+            investmentText += `<p>💰 ₦${inv.amount.toLocaleString()} on ${new Date(inv.timestamp).toLocaleDateString()} - ${status}</p>`;
+          });
+        }
 
-      // Process Investments
-      if (user.investments && user.investments.length > 0) {
-        user.investments.forEach((inv) => {
-          const elapsed = now - inv.timestamp;
-          const matured = elapsed >= 45 * 60 * 1000;
-          
-          if (!inv.initialAdded) {
-            balance += inv.amount;
-            inv.initialAdded = true;
-          }
-          if (matured && !inv.credited) {
-            balance += inv.amount; 
-            inv.credited = true;
-          }
+        // Process Withdrawals
+        if (user.withdrawals && user.withdrawals.length > 0) {
+          user.withdrawals.forEach(w => {
+            const hoursPassed = (now - w.timestamp) / (1000 * 60 * 60);
+            const isComplete = hoursPassed >= 1.5;
+            withdrawLogs += `<p>Withdrawn ₦${w.amount.toLocaleString()} to ${w.bank} - <strong>${isComplete ? "✅ Success" : "⏳ Pending"}</strong></p>`;
+          });
+        }
 
-          const status = inv.credited ? "✅ Profit Added" : "⏳ Processing...";
-          investmentText += `<p>💰 Invested ₦${inv.amount} - ${status}</p>`;
-        });
-      }
-
-      // Process Withdrawals
-      if (user.withdrawals) {
-        user.withdrawals.forEach(w => {
-          const isComplete = (now - w.timestamp) / (1000 * 60 * 60) >= 1.5;
-          withdrawLogs += `<p>₦${w.amount} to ${w.bank} - <strong>${isComplete ? "Success" : "Pending"}</strong></p>`;
-        });
-      }
-
-      // Save and Update
-      user.balance = balance;
-      localStorage.setItem("kingc_user", JSON.stringify(user));
-      document.getElementById("balance").textContent = balance.toLocaleString();
-      
-      if(investmentText) document.getElementById("investment-details").innerHTML = investmentText;
-      if(withdrawLogs) document.getElementById("withdraw-log").innerHTML = withdrawLogs;
-
-      // FUNCTIONS
-      window.selectPlan = function(amount) {
-        user.selected_investment = { amount: amount, timestamp: Date.now() };
+        // Update persistence
+        user.balance = balance;
         localStorage.setItem("kingc_user", JSON.stringify(user));
-        window.location.href = "deposit.html";
+
+        // Update UI
+        document.getElementById("balance").textContent = balance.toLocaleString();
+        if (investmentText) document.getElementById("investment-details").innerHTML = investmentText;
+        if (withdrawLogs) document.getElementById("withdraw-log").innerHTML = withdrawLogs;
+      }
+
+      // CLICK FUNCTIONS
+      window.selectPlan = function(amount) {
+        user.investment = { amount: amount, timestamp: Date.now() };
+        localStorage.setItem("kingc_user", JSON.stringify(user));
+        window.location.href = "deposit.html"; // Redirects properly now
       };
 
       window.withdraw = function() {
         window.location.href = "withdraw.html";
       };
 
-    } catch(e) {
-      console.error(e);
+    } catch(error) {
+      console.error("Dashboard Error:", error);
     }
   </script>
 </body>
